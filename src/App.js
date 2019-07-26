@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import GlobalStyle from "./Styles/globalStyle";
-import Root from "./Router/Root";
+import Root from "./router/Root";
 
 const App = () => {
   return (
