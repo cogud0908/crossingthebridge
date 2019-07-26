@@ -10,7 +10,8 @@
     "react-scripts": "3.0.1",
     "redux": "^4.0.4",
     "redux-actions": "^2.6.5",
-    "styled-components": "^4.3.2"
+    "styled-components": "^4.3.2",
+    "styled-reset": "^3.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

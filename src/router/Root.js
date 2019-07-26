@@ -1,12 +1,13 @@
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
-import App from "../App";
+import { Route } from "react-router-dom";
+import { Intro, View } from "../Pages";
 
 const Root = () => {
   return (
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <>
+      <Route exact path="/" component={Intro} />
+      <Route path="/view" component={View} />
+    </>
   );
 };
 
