@@ -22,4 +22,4 @@ const InputText = ({ InputValue, textValue, onChange }) => {
   );
 };
 
-export default InputText;
+export default React.memo(InputText);

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import InputText from "../Components/InputText";
-import StartButton from "../Components/StartButton";
+import InputText from "../Components/Intro/InputText";
+import StartButton from "../Components/Intro/StartButton";
 
 const Root = styled.div`
   width: 100vw;

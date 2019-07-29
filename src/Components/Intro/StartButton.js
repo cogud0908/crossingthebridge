@@ -18,4 +18,4 @@ const StartButton = () => {
   );
 };
 
-export default StartButton;
+export default React.memo(StartButton);
