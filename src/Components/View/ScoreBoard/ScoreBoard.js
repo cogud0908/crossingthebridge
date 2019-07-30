@@ -17,7 +17,7 @@ const Score = ({ length, weight, values }) => {
     <Root>
       <ScoreSpan>length : {length}</ScoreSpan>
       <ScoreSpan>weight : {weight} </ScoreSpan>
-      <ScoreSpan>values : {values} </ScoreSpan>
+      <ScoreSpan>values : {values.toString()} </ScoreSpan>
     </Root>
   );
 };

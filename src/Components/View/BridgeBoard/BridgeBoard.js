@@ -15,18 +15,20 @@ const Root = styled.div`
   align-items: center;
 `;
 
-const BridgeBoard = () => {
+const BridgeBoard = ({ bridge, weight, time }) => {
   return (
     <Root>
-      <Time time={10} />
-      <Bridge length={5} />
-      <Weight weight={10} />
+      <Time time={time} />
+      <Bridge bridge={bridge} />
+      <Weight weight={weight} />
     </Root>
   );
 };
 
 BridgeBoard.propTypes = {
-  values: PropTypes.arrayOf(PropTypes.number)
+  length: PropTypes.array,
+  weight: PropTypes.number,
+  time: PropTypes.number
 };
 
 export default React.memo(BridgeBoard);

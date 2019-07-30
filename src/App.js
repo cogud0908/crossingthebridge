@@ -1,16 +1,17 @@
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
-import GlobalStyle from "./Styles/globalStyle";
-import Root from "./router/Root";
+import { Route, Switch } from "react-router-dom";
+import GlobalStyle from "./Styles/GlobalStyle";
+import { Intro, View } from "./Pages";
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <>
-        <GlobalStyle />
-        <Root />
-      </>
-    </BrowserRouter>
+    <>
+      <GlobalStyle />
+      <Switch>
+        <Route exact path="/" component={Intro} />
+        <Route path="/view" component={View} />
+      </Switch>
+    </>
   );
 };
 

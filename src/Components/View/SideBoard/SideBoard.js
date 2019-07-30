@@ -25,7 +25,7 @@ const Image = styled.img.attrs({
   margin: 0.5rem;
 `;
 
-const Side = ({ position, values }) => {
+const SideBoard = ({ position, values }) => {
   return (
     <Root position={position}>
       {values.map(item => (
@@ -35,8 +35,8 @@ const Side = ({ position, values }) => {
   );
 };
 
-Side.propTypes = {
-  values: PropTypes.arrayOf(PropTypes.number)
+SideBoard.propTypes = {
+  values: PropTypes.array
 };
 
-export default React.memo(Side);
+export default React.memo(SideBoard);
