@@ -7,10 +7,10 @@ const Root = styled.div`
   font-size: 30px;
 `;
 
-const Weight = ({ weight }) => {
+const Weight = ({ totalWeight }) => {
   return (
     <Root>
-      <span>Weight : {weight}</span>
+      <span>Weight : {totalWeight}</span>
     </Root>
   );
 };

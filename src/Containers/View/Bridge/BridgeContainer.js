@@ -22,16 +22,17 @@ class BridgeContainer extends React.PureComponent {
   };
 
   componentWillMount() {
-    const { weight } = this.props;
+    let timer = setInterval(() => {
+      let flag = this.move();
 
-    if (weight) {
-      setInterval(() => {
-        this.move();
+      if (flag) {
+        clearInterval(timer);
+      } else {
         this.setState({
           time: this.state.time + 0.5
         });
-      }, 500);
-    }
+      }
+    }, 500);
   }
 
   move = () => {
@@ -44,44 +45,46 @@ class BridgeContainer extends React.PureComponent {
       totalWeight
     } = this.props;
 
+    if (leftWeights[0] === undefined && totalWeight === 0) {
+      return true;
+    }
+
+    const total = () => bufferBridge.reduce((a, b) => a + b, 0);
     const bufferBridge = Array.apply(null, new Array(bridge.length)).map(
       Number.prototype.valueOf,
       0
     );
 
     if (bridge[bridge.length - 1]) {
-      // 여기가 문제
       const bufferRight = [...rightWeights, bridge[bridge.length - 1]];
-      //
+
       bufferBridge[bridge.length - 1] = 0;
       ViewActions.setRightWeights(bufferRight);
     }
-
     for (let i = bridge.length - 2; i >= 0; i--) {
       bufferBridge[i + 1] = bridge[i];
     }
 
-    if (weight >= parseInt(leftWeights[0]) + totalWeight) {
+    if (weight >= parseInt(leftWeights[0]) + total()) {
       bufferBridge[0] = leftWeights.shift();
 
       const bufferLeft = [...leftWeights];
 
-      ViewActions.setBridge(bufferBridge);
       ViewActions.setLeftWeights(bufferLeft);
-      ViewActions.setTotalWeight(bufferBridge.reduce((a, b) => a + b, 0));
-    } else {
-      ViewActions.setTotalWeight(bufferBridge.reduce((a, b) => a + b, 0));
-      ViewActions.setBridge(bufferBridge);
     }
+    ViewActions.setTotalWeight(total());
+    ViewActions.setBridge(bufferBridge);
+
+    return false;
   };
 
   render() {
     const { time } = this.state;
-    const { weight, leftWeights, rightWeights, bridge } = this.props;
+    const { totalWeight, leftWeights, rightWeights, bridge } = this.props;
     return (
       <Root>
         <SideBoard position="left" values={leftWeights} />
-        <BridgeBoard bridge={bridge} weight={weight} time={time} />
+        <BridgeBoard bridge={bridge} totalWeight={totalWeight} time={time} />
         <SideBoard position="right" values={rightWeights} />
       </Root>
     );
@@ -90,7 +93,6 @@ class BridgeContainer extends React.PureComponent {
 
 BridgeContainer.propTypes = {
   bridge: PropTypes.array,
-  weight: PropTypes.number,
   leftWeights: PropTypes.array,
   rightWeights: PropTypes.array,
   totalWeight: PropTypes.number

@@ -88,6 +88,7 @@ class IntroContainer extends React.PureComponent {
     InputActions.setLength(parseInt(length));
     InputActions.setWeight(parseInt(weight));
     InputActions.setValues(value);
+    ViewActions.setRightWeights([]);
     ViewActions.setLeftWeights(value);
     ViewActions.setBridge(
       Array.apply(null, new Array(parseInt(length))).map(

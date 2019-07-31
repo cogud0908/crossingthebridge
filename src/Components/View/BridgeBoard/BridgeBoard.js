@@ -15,19 +15,19 @@ const Root = styled.div`
   align-items: center;
 `;
 
-const BridgeBoard = ({ bridge, weight, time }) => {
+const BridgeBoard = ({ bridge, totalWeight, time }) => {
   return (
     <Root>
       <Time time={time} />
       <Bridge bridge={bridge} />
-      <Weight weight={weight} />
+      <Weight totalWeight={totalWeight} />
     </Root>
   );
 };
 
 BridgeBoard.propTypes = {
   length: PropTypes.array,
-  weight: PropTypes.number,
+  totalWeight: PropTypes.number,
   time: PropTypes.number
 };
 
