@@ -22,16 +22,15 @@ class BridgeContainer extends React.PureComponent {
   };
 
   componentWillMount() {
-    const { leftWeights, weight } = this.props;
+    const { weight } = this.props;
 
     if (weight) {
       setInterval(() => {
-        if (leftWeights !== []) {
-          this.move();
-        } else {
-          return false;
-        }
-      }, 1000);
+        this.move();
+        this.setState({
+          time: this.state.time + 0.5
+        });
+      }, 500);
     }
   }
 
@@ -45,40 +44,35 @@ class BridgeContainer extends React.PureComponent {
       totalWeight
     } = this.props;
 
-    console.log(leftWeights, rightWeights, weight, bridge, totalWeight);
-
-    const bufferBridge = new Array(bridge.length);
-    const bufferRight = new Array(rightWeights.length);
+    const bufferBridge = Array.apply(null, new Array(bridge.length)).map(
+      Number.prototype.valueOf,
+      0
+    );
 
     if (bridge[bridge.length - 1]) {
       // 여기가 문제
-      bufferRight = [...rightWeights, bridge[bridge.length - 1]];
+      const bufferRight = [...rightWeights, bridge[bridge.length - 1]];
       //
       bufferBridge[bridge.length - 1] = 0;
+      ViewActions.setRightWeights(bufferRight);
     }
 
     for (let i = bridge.length - 2; i >= 0; i--) {
-      if (bridge[i] !== null) {
-        bufferBridge[i + 1] = bridge[i];
-      }
+      bufferBridge[i + 1] = bridge[i];
     }
 
-    if (weight < parseInt(leftWeights[0]) + totalWeight) return false;
+    if (weight >= parseInt(leftWeights[0]) + totalWeight) {
+      bufferBridge[0] = leftWeights.shift();
 
-    bufferBridge[0] = leftWeights.shift();
+      const bufferLeft = [...leftWeights];
 
-    const bufferLeft = leftWeights.slice(0, leftWeights.length);
-
-    // 여기가 문제
-    ViewActions.setTotalWeight(bridge.reduce((a, b) => a + b, 0));
-    //
-    ViewActions.setBridge(bufferBridge);
-    ViewActions.setRightWeights(bufferRight);
-    ViewActions.setLeftWeights(bufferLeft);
-
-    this.setState({
-      time: this.state.time + 1
-    });
+      ViewActions.setBridge(bufferBridge);
+      ViewActions.setLeftWeights(bufferLeft);
+      ViewActions.setTotalWeight(bufferBridge.reduce((a, b) => a + b, 0));
+    } else {
+      ViewActions.setTotalWeight(bufferBridge.reduce((a, b) => a + b, 0));
+      ViewActions.setBridge(bufferBridge);
+    }
   };
 
   render() {
@@ -112,7 +106,7 @@ export default connect(
   state => ({
     weight: state.input.get("weight"),
     leftWeights: state.view.get("leftWeights"),
-    rightWeights: state.view.get("rightWeigths"),
+    rightWeights: state.view.get("rightWeights"),
     bridge: state.view.get("bridge"),
     totalWeight: state.view.get("totalWeight")
   }),

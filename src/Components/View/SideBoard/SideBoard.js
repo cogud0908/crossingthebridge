@@ -29,7 +29,7 @@ const SideBoard = ({ position, values }) => {
   return (
     <Root position={position}>
       {values.map(item => (
-        <Image key={item} />
+        <Image />
       ))}
     </Root>
   );

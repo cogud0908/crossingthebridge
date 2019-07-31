@@ -65,7 +65,7 @@ class IntroContainer extends React.PureComponent {
     const bufferArray = [];
 
     for (let index = 0; index < buffer.length; index++) {
-      bufferArray[index] = buffer[index];
+      bufferArray[index] = parseInt(buffer[index]);
     }
 
     return bufferArray;
@@ -89,7 +89,12 @@ class IntroContainer extends React.PureComponent {
     InputActions.setWeight(parseInt(weight));
     InputActions.setValues(value);
     ViewActions.setLeftWeights(value);
-    ViewActions.setBridge(new Array(parseInt(length)));
+    ViewActions.setBridge(
+      Array.apply(null, new Array(parseInt(length))).map(
+        Number.prototype.valueOf,
+        0
+      )
+    );
 
     this.props.history.push("/view");
   };
