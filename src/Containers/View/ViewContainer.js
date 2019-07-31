@@ -18,6 +18,7 @@ const Root = styled.div`
 
 class ViewContainer extends React.PureComponent {
   componentDidMount() {
+    // store
     const { length, weight, values } = this.props;
     if (length === 0 || weight === 0 || values === 0) {
       this.props.history.push("/");
@@ -25,6 +26,7 @@ class ViewContainer extends React.PureComponent {
   }
 
   render() {
+    // store
     const { length, weight, values } = this.props;
     return (
       <Root>

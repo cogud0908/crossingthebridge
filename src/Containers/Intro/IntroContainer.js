@@ -29,8 +29,14 @@ class IntroContainer extends React.PureComponent {
     values: ""
   };
 
+  // 숫자 정규식
   isValidNumber = text => {
     return /^[0-9]*$/.test(text);
+  };
+
+  // 문자 정규식
+  isNotValidCharacter = text => {
+    return !/[ㄱ-ㅎ|가-힣|a-z|A-Z|ㅏ-ㅣ.*]/.test(text);
   };
 
   handleChangeLength = event => {
@@ -55,11 +61,24 @@ class IntroContainer extends React.PureComponent {
 
   handleChangeValues = event => {
     const values = event.target.value;
-    this.setState({ values });
+
+    if (this.isNotValidCharacter(values)) {
+      this.setState({ values });
+    } else {
+      event.target.value = this.state.values;
+    }
   };
 
+  // value값을 배열로 변환
   valuesToArray = values => {
-    const value = values.replace(/(\s*)/g, "");
+    // 정규식 (공백제거, 특수문자 제거, ","앞뒤 중복제거, 불필요한 0 제거)
+    const value = values
+      .replace(/(\s*)/g, "")
+      .replace(/[\{\}\[\]\/?.;:|\)*~`_!^\-+<>@\#$%&\\\=\(\'\"]/gi, "")
+      .replace(/,+/g, ",")
+      .replace(/^,|^0,/, "")
+      .replace(/,$/, "")
+      .replace(/,0,/g, ",");
 
     const buffer = value.split(",");
     const bufferArray = [];
@@ -71,15 +90,24 @@ class IntroContainer extends React.PureComponent {
     return bufferArray;
   };
 
+  // start시 store설정
   handleSubmit = () => {
+    // Actions
     const { InputActions, ViewActions } = this.props;
+
     const { length, weight, values } = this.state;
 
+    // 예외처리
     if (length > 10) {
       alert("길이는 최대 10 입니다!");
       this.setState({
         length: ""
       });
+      return;
+    }
+
+    if (length === "" || weight === "" || values === "") {
+      alert("빈칸을 입력해주세요!");
       return;
     }
 

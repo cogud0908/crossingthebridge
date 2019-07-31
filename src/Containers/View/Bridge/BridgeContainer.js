@@ -10,6 +10,8 @@ import { bindActionCreators } from "redux";
 import * as ViewActions from "../../../Store/Modules/view";
 import * as IntroActions from "../../../Store/Modules/input";
 
+import { withRouter } from "react-router-dom";
+
 const Root = styled.div`
   display: flex;
   flex-direction: row;
@@ -22,11 +24,13 @@ class BridgeContainer extends React.PureComponent {
   };
 
   componentWillMount() {
-    let timer = setInterval(() => {
-      let flag = this.move();
+    const timer = setInterval(() => {
+      let result = this.move();
 
-      if (flag) {
+      if (result.flag) {
         clearInterval(timer);
+        alert(result.msg);
+        this.props.history.push("/");
       } else {
         this.setState({
           time: this.state.time + 0.5
@@ -45,26 +49,38 @@ class BridgeContainer extends React.PureComponent {
       totalWeight
     } = this.props;
 
+    // excetionHandling (예외처리)
     if (leftWeights[0] === undefined && totalWeight === 0) {
-      return true;
+      return { flag: true, msg: "동작이 완료되었습니다." };
     }
 
+    if (weight < parseInt(leftWeights[0]) && totalWeight === 0) {
+      return { flag: true, msg: "최대 무게보다 무거운 사람이 있습니다." };
+    }
+
+    // 다리 현재 무게 값 구하는 함수
     const total = () => bufferBridge.reduce((a, b) => a + b, 0);
+
+    // 임시 다리 배열 초기화
     const bufferBridge = Array.apply(null, new Array(bridge.length)).map(
       Number.prototype.valueOf,
       0
     );
 
+    // 오른쪽 지역으로 이동 할 값이 있을경우 실행
     if (bridge[bridge.length - 1]) {
       const bufferRight = [...rightWeights, bridge[bridge.length - 1]];
 
       bufferBridge[bridge.length - 1] = 0;
       ViewActions.setRightWeights(bufferRight);
     }
+
+    // 다리에 있는 인원 한칸 씩 이동
     for (let i = bridge.length - 2; i >= 0; i--) {
       bufferBridge[i + 1] = bridge[i];
     }
 
+    // 다리에 새로 올라갈 수 있는 인원이 있을 경우 실행
     if (weight >= parseInt(leftWeights[0]) + total()) {
       bufferBridge[0] = leftWeights.shift();
 
@@ -72,10 +88,12 @@ class BridgeContainer extends React.PureComponent {
 
       ViewActions.setLeftWeights(bufferLeft);
     }
+
+    // 다리 값과 다리 중량 store에 저장
     ViewActions.setTotalWeight(total());
     ViewActions.setBridge(bufferBridge);
 
-    return false;
+    return { flag: false };
   };
 
   render() {
@@ -116,4 +134,4 @@ export default connect(
     IntroActions: bindActionCreators(IntroActions, dispatch),
     ViewActions: bindActionCreators(ViewActions, dispatch)
   })
-)(BridgeContainer);
+)(withRouter(BridgeContainer));
