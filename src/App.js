@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import GlobalStyle from "./Styles/Global";
+import GlobalStyle from "./Styles/GlobalStyle";
 import { Intro, View } from "./Pages";
 
 const App = () => {
