@@ -2,10 +2,11 @@ import React from "react";
 import styled from "styled-components";
 
 const Button = styled.button`
-  width: 15rem;
-  height: 2rem;
+  width: 10rem;
+  height: 3rem;
 
-  font-size: 20px;
+  margin-right: 8rem;
+  font-size: 30px;
 `;
 
 const StartButton = ({ onClick }) => {

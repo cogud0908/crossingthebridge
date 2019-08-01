@@ -15,9 +15,9 @@ const Root = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
 
-  background-color: gray;
+  background: url("https://post-phinf.pstatic.net/MjAxNzA2MjhfMTQw/MDAxNDk4NjU2MzY1ODYw.xfxbU2-DZu-LcYMzxLZc-SgvmAvBY3WDQQLGjGP3CJog.F9Hufm5_CpSfnARL6rDl1sV-iig6wKSG5FDbxSRicKIg.JPEG/%EB%B0%B0%EA%B2%BD%ED%99%94%EB%A9%B450.jpg?type=w1200");
 `;
 
 const textArray = ["length", "weight", "value"];
@@ -55,7 +55,7 @@ class IntroContainer extends React.PureComponent {
     if (this.isValidNumber(weight)) {
       this.setState({ weight });
     } else {
-      event.target.value = this.state.length;
+      event.target.value = this.state.weight;
     }
   };
 
@@ -71,23 +71,53 @@ class IntroContainer extends React.PureComponent {
 
   // value값을 배열로 변환
   valuesToArray = values => {
-    // 정규식 (공백제거, 특수문자 제거, ","앞뒤 중복제거, 불필요한 0 제거)
+    // 정규식 (공백제거, 특수문자 제거, ","앞뒤 중복제거)
     const value = values
       .replace(/(\s*)/g, "")
       .replace(/[\{\}\[\]\/?.;:|\)*~`_!^\-+<>@\#$%&\\\=\(\'\"]/gi, "")
       .replace(/,+/g, ",")
-      .replace(/^,|^0,/, "")
-      .replace(/,$/, "")
-      .replace(/,0,/g, ",");
+      .replace(/^,/, "")
+      .replace(/,$/, "");
 
+    // 배열만들기
     const buffer = value.split(",");
     const bufferArray = [];
 
+    // String ===> Number
     for (let index = 0; index < buffer.length; index++) {
       bufferArray[index] = parseInt(buffer[index]);
     }
 
-    return bufferArray;
+    // 0이하 제거
+    const filter = bufferArray.filter(element => element > 0);
+
+    return filter;
+  };
+
+  exception = () => {
+    const { length, weight, values } = this.state;
+
+    if (length === "" || weight === "" || values === "") {
+      return { success: false, msg: "빈칸을 입력해주세요!" };
+    }
+
+    if (length > 10) {
+      return { success: false, msg: "길이는 최대 10입니다!" };
+    }
+
+    const value = this.valuesToArray(values);
+
+    // if (value.length > 15) {
+    //   return { success: false, msg: "사람 수는 최대 15명입니다!" };
+    // }
+
+    for (let index = 0; index < value.length; index++) {
+      if (value[index] > parseInt(weight)) {
+        return { success: false, msg: "최대중량보다 높은 사람이 있습니다!" };
+      }
+    }
+
+    return { success: true, value: value };
   };
 
   // start시 store설정
@@ -95,35 +125,21 @@ class IntroContainer extends React.PureComponent {
     // Actions
     const { InputActions, ViewActions } = this.props;
 
-    const { length, weight, values } = this.state;
+    const { length, weight } = this.state;
 
-    // 예외처리
-    if (length > 10) {
-      alert("길이는 최대 10 입니다!");
-      this.setState({
-        length: ""
-      });
+    const result = this.exception();
+
+    if (!result.success) {
+      alert(result.msg);
       return;
     }
-
-    if (length === "" || weight === "" || values === "") {
-      alert("빈칸을 입력해주세요!");
-      return;
-    }
-
-    const value = this.valuesToArray(values);
 
     InputActions.setLength(parseInt(length));
     InputActions.setWeight(parseInt(weight));
-    InputActions.setValues(value);
+    InputActions.setValues(result.value);
     ViewActions.setRightWeights([]);
-    ViewActions.setLeftWeights(value);
-    ViewActions.setBridge(
-      Array.apply(null, new Array(parseInt(length))).map(
-        Number.prototype.valueOf,
-        0
-      )
-    );
+    ViewActions.setLeftWeights(result.value);
+    ViewActions.setBridge(new Array(parseInt(length)).fill(0));
 
     this.props.history.push("/view");
   };

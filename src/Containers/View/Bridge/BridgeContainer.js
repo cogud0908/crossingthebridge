@@ -23,11 +23,11 @@ class BridgeContainer extends React.PureComponent {
     time: 0
   };
 
-  componentWillMount() {
+  componentDidMount() {
     const timer = setInterval(() => {
       let result = this.move();
 
-      if (result.flag) {
+      if (result.isException) {
         clearInterval(timer);
         alert(result.msg);
         this.props.history.push("/");
@@ -51,21 +51,21 @@ class BridgeContainer extends React.PureComponent {
 
     // excetionHandling (예외처리)
     if (leftWeights[0] === undefined && totalWeight === 0) {
-      return { flag: true, msg: "동작이 완료되었습니다." };
+      return { isException: true, msg: "동작이 완료되었습니다." };
     }
 
     if (weight < parseInt(leftWeights[0]) && totalWeight === 0) {
-      return { flag: true, msg: "최대 무게보다 무거운 사람이 있습니다." };
+      return {
+        isException: true,
+        msg: "최대 무게보다 무거운 사람이 있습니다."
+      };
     }
 
     // 다리 현재 무게 값 구하는 함수
     const total = () => bufferBridge.reduce((a, b) => a + b, 0);
 
     // 임시 다리 배열 초기화
-    const bufferBridge = Array.apply(null, new Array(bridge.length)).map(
-      Number.prototype.valueOf,
-      0
-    );
+    const bufferBridge = new Array(bridge.length).fill(0);
 
     // 오른쪽 지역으로 이동 할 값이 있을경우 실행
     if (bridge[bridge.length - 1]) {
@@ -93,7 +93,7 @@ class BridgeContainer extends React.PureComponent {
     ViewActions.setTotalWeight(total());
     ViewActions.setBridge(bufferBridge);
 
-    return { flag: false };
+    return { isException: false };
   };
 
   render() {
